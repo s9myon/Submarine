@@ -1,0 +1,16 @@
+.container{
+    display: flex;
+    flex-wrap: wrap;
+    
+}
+.input{
+    width:50px;
+}
+.addPoly{
+    display: block;
+}
+.polynomial{
+    padding-right: 100px;
+    width: auto;
+    display: flex;
+}
