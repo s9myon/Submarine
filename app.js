@@ -26,7 +26,7 @@ new UserManager({ mediator, io, MESSAGES, db });
 new ChatManager({ mediator, io, MESSAGES, db });
 
 io.on('connection', socket => {
-	console.log('connected ', socket.id);
+	console.log('connected', socket.id);
 	socket.on('disconnect', () => console.log('disconnect', socket.id));
 });
 

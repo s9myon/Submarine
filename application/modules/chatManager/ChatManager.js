@@ -3,24 +3,29 @@ class ChatManager {
         if (!io) return;
         this.db = db;
         this.MESSAGES = MESSAGES;
-
+        this.rooms = {};// комнаты { id: room }
+        this.mediator = mediator;
+        
         io.on('connection', socket => {
-            socket.on(MESSAGES.NEW_MESSAGE, data => this.sendNewMessage(data, io));
-            // { 
-            //     const { token } = data;
-            //     const user = await db.getUserByToken(token);
-            //     if(user) {
-            //         io.local.emit(MESSAGES.NEW_MESSAGE, data);
-            //     }
-            // });
+            socket.on(MESSAGES.NEW_MESSAGE, data => this.sendNewMessage(data, io, socket));
+            socket.on(MESSAGES.ADD_TO_ROOM, data => this.addToRoom(data));
         });
     }
 
-    async sendNewMessage(data = {}, io) {
+    addToRoom(data) {
+        const { token, room } = data;
+        const user = this.mediator.get('getUserByToken', token);
+        this.rooms[user.id] = room;
+    }
+
+    async sendNewMessage(data = {}, io, socket) {
         const { token } = data;
-        let user = await this.db.getUserByToken(token);
+        let user = this.mediator.get('getUserByToken', token);
+        const room = this.rooms[user.id] ? this.rooms[user.id] : 'default';
+        socket.join(room);
         if(user) {
-            io.sockets.emit(this.MESSAGES.NEW_MESSAGE, data);
+            io.to(room).emit(this.MESSAGES.NEW_MESSAGE, { name: user.name, message: data.message });
+            //io.sockets.emit(this.MESSAGES.NEW_MESSAGE, { name: user.name, message: data.message });
         }
     }
 }

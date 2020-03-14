@@ -2,12 +2,14 @@ const md5 = require('md5');
 
 class UserManager {
     constructor({ mediator, io, MESSAGES, db }) {
-
         this.db = db;
         this.MESSAGES = MESSAGES;
 
         this.users = {};
-
+        
+        // настроить триггеры
+        mediator.set('getUserByToken', token => this.getUserByTokenTrigger(token));
+        
         if (!io) return;
         io.on('connection', socket => {
             socket.on(MESSAGES.USER_LOGIN, data => this.userLogin(data, socket));
@@ -16,11 +18,21 @@ class UserManager {
         });
     }
 
+    getUserByTokenTrigger(token) {
+        for(let user in this.users) {
+            if(this.users[user].token == token) return this.users[user];
+        }
+        return null;
+    }
+
     userLogout(data = {}, socket) {
-        const { id, login } = data;
-        this.db.setToken(null, login);
-        delete this.users[id];
-        socket.emit(this.MESSAGES.USER_LOGOUT, true);
+        const { token } = data;
+        let user = this.getUserByTokenTrigger(token);
+        if(user) {
+            this.db.setToken(null, user.login);
+            delete this.users[user.id];
+            socket.emit(this.MESSAGES.USER_LOGOUT, true);
+        }   
     }
 
     async userLogin(data = {}, socket) {

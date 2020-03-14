@@ -1,5 +1,5 @@
 const CONFIG = {
-    PORT: 3000,
+    PORT: 9000,
 
     DATABASE: {
         HOST: '',
@@ -10,7 +10,8 @@ const CONFIG = {
 
     // список всех триггеров в системе
     TRIGGERS: {
-        SQR: 'SQR'
+        SQR: 'SQR',
+        GET_USER_BY_TOKEN: 'GET_USER_BY_TOKEN'
     },
 
     // список всех событий в системе
@@ -26,7 +27,8 @@ const CONFIG = {
         USER_REGISTRATION: 'USER_REGISTRATION',
         USER_LOGOUT: 'USER_LOGOUT',
         // about chat
-        NEW_MESSAGE: 'NEW_MESSAGE' // новое сообщение в чат
+        NEW_MESSAGE: 'NEW_MESSAGE', // новое сообщение в чат
+        ADD_TO_ROOM: 'ADD_TO_ROOM'
         // about lobby
         // about game
     }

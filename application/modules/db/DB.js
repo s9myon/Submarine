@@ -29,13 +29,6 @@ class DB {
         this.db.run(query, [login, password, name]);
     }
 
-    getUserByLoginPass(login, password) {
-        return new Promise(resolve => this.db.serialize(() => {
-            const query = "SELECT * FROM user WHERE login=? AND password=?";
-            this.db.get(query, [login, password], (err, row) => resolve(err ? null : row));
-        }));
-    }
-
     setToken(token, login) {
         const query = "UPDATE user SET token=? WHERE login=?";
         this.db.run(query, [token, login]);

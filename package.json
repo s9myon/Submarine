@@ -1,0 +1,11 @@
+{
+  "name": "submarine",
+  "version": "1.0.0",
+  "dependencies": {
+    "body-parser": "latest",
+    "express": "latest",
+    "md5": "^2.2.1",
+    "socket.io": "latest",
+    "sqlite3": "latest"
+  }
+}
