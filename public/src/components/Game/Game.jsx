@@ -13,6 +13,8 @@ class Game extends React.Component {
       messages: []
     };
     socket.on(this.MESSAGES.NEW_MESSAGE, (data) => this.newMessage(data));
+    socket.on(this.MESSAGES.TEAM_LIST, (data) => console.log(data));
+    socket.on(this.MESSAGES.REMOVE_TEAM, (data) => console.log(data));
   }
 
   sendMessage() {
@@ -50,6 +52,19 @@ class Game extends React.Component {
     this.setAuthState(false);
   }
 
+  createRoom() {
+    socket.emit(this.MESSAGES.CREATE_TEAM, { 
+      token: localStorage.getItem('token'),
+      name: 'белая стрекоза'
+    });
+  }
+
+  deleteRoom() {
+    socket.emit(this.MESSAGES.REMOVE_TEAM, { 
+      token: localStorage.getItem('token')
+    });
+  }
+
   render() {
     return (
       <div>
@@ -64,6 +79,8 @@ class Game extends React.Component {
         </div>
         <br/>
         <button id="userLogout" onClick = { () => this.logout() }>Logout</button>
+        <button id="createRoom" onClick = { () => this.createRoom() }>create Room</button>
+        <button id="deleteRoom" onClick = { () => this.deleteRoom() }>delete Room</button>
       </div>
     );
   }
