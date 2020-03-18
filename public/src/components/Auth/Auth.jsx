@@ -47,14 +47,17 @@ class Auth extends React.Component {
       { this.state.registr ? 
         <Registr MESSAGES = { this.MESSAGES } setRegistrState = { (val) => this.setRegistrState(val) }/> : 
         <div className="auth">
+          
           <div className="menu__auth">
+          <h1>Authorization</h1>
             <div className="input__menu">
+            
               <input className='input__login' id="loginAuth" placeholder="Login" />
               <input type="password" className='input__password' id="passwordAuth" placeholder="Password"  />
             </div>  
             <div className="button__menu">
-              <div className='button__sign__in' id="userLogin" onClick = {() => this.auth()}><label id='button'>Sign in</label></div>
-              <div className="button__sign__up" id="userRegistr" onClick = { () => this.setRegistrState(true) }><label id='button'>Sign up</label></div>
+              <a className='button__sign__in' id='button' id="userLogin" onClick = {() => this.auth()}>Sign in</a>
+              <a className="button__sign__up" id='button' id="userRegistr" onClick = { () => this.setRegistrState(true) }>Sign up</a>
             </div>
           </div>
         </div>

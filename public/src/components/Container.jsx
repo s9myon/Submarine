@@ -1,14 +1,14 @@
 import React from 'react';
 
 import Auth from './Auth';
-import Game from './Game';
+import Team from './Team';
 import CONFIG  from './../config';
 
 class Container extends React.Component {
     constructor() {
         super();
         this.state = {
-            auth: false
+            auth: true
         }
     }
 
@@ -22,7 +22,7 @@ class Container extends React.Component {
         return (
             <div className="App">
                 { this.state.auth ? 
-                    <Game MESSAGES = { CONFIG.MESSAGES } setAuthState = {(val) => this.setAuthState(val)}/> : 
+                    <Team MESSAGES = { CONFIG.MESSAGES } setAuthState = {(val) => this.setAuthState(val)}/> : 
                     <Auth MESSAGES = { CONFIG.MESSAGES } setAuthState = {(val) => this.setAuthState(val)}/> }
             </div>
         );
