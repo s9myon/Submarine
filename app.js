@@ -40,9 +40,10 @@ app.use('/', router);
 
 function deinitModules() {
     db.destructor();
+	setTimeout(() => process.exit(), 500);
 }
 
 server.listen(PORT, () => console.log(`Port is ${PORT}`));
 
-//process.on('exit', deinitModules);
-//process.on('SIGINT', deinitModules); // CTRL + C
+process.on('exit', deinitModules);
+process.on('SIGINT', deinitModules); // CTRL + C
