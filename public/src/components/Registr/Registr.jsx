@@ -33,7 +33,7 @@ class Registr extends React.Component {
                 <input id="loginRegistr" placeholder="Login"/>
                 <input id="passwordRegistr" placeholder="Password"/>
                 <input id="nameRegistr" placeholder="Name"/>
-                <button id="userRegistration" onClick = { () => this.registration() }>Registration</button>
+                <button id="userRegistration" onClick = { () => {this.registration(); this.setRegistrState(false); } }>Registration</button>
             </div>
         );
     }
