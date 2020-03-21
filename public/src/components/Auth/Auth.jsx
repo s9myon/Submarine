@@ -3,30 +3,23 @@ import md5 from 'md5';
 import './Auth.scss';
 import './../../index.css';
 
-import Registr from './../Registr';
-
 import socket from '../../helpers/socket';
 
 class Auth extends React.Component {
   constructor(props) {
     super();
     this.setAuthState = props.setAuthState;
+    this.setRegistrState = props.setRegistrState;
+    this.setTeams = props.setTeams;
     this.MESSAGES = props.MESSAGES;
-    this.state = {
-      registr: false
-    }
     //public_old Внизу
     socket.on(this.MESSAGES.USER_LOGIN, data => {
-      if(data.token) {
-        localStorage.setItem('token', data.token);  
-        this.setAuthState(true);
+      if(data && data.user && data.user.token) {
+        localStorage.setItem('token', data.user.token);
+        localStorage.setItem('id', data.user.id);
+        this.setTeams(data.teams);
+        this.setAuthState(false);
       }
-    });
-  }
-
-  setRegistrState(val) {
-    this.setState({
-      registr: val
     });
   }
 
@@ -44,17 +37,16 @@ class Auth extends React.Component {
   render() {
     return (
       <div className="container__intro">
-      { this.state.registr ? 
-        <Registr MESSAGES = { this.MESSAGES } setRegistrState = { (val) => this.setRegistrState(val) }/> : 
-        <div className="auth">
+      { <div className="auth">
           <div className="menu__auth">
+          <h1>Authorization</h1>
             <div className="input__menu">
               <input className='input__login' id="loginAuth" placeholder="Login" />
               <input type="password" className='input__password' id="passwordAuth" placeholder="Password"  />
             </div>  
             <div className="button__menu">
-              <div className='button__sign__in' id="userLogin" onClick = {() => this.auth()}><label id='button'>Sign in</label></div>
-              <div className="button__sign__up" id="userRegistr" onClick = { () => this.setRegistrState(true) }><label id='button'>Sign up</label></div>
+              <a href="#a" className="button__sign__in button" id="userLogin" onClick = {() => this.auth()}>Sign in</a>
+              <a href="#a" className="button__sign__up button" id="userRegistr" onClick = { () => this.setRegistrState(true) }>Sign up</a>
             </div>
           </div>
         </div>

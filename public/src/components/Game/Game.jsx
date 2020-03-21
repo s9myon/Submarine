@@ -9,12 +9,11 @@ class Game extends React.Component {
     super();
     this.MESSAGES = props.MESSAGES;
     this.setAuthState = props.setAuthState;
+    this.setGameState = props.setGameState;
     this.state = {
       messages: []
     };
-    socket.on(this.MESSAGES.NEW_MESSAGE, (data) => this.newMessage(data));
-    socket.on(this.MESSAGES.TEAM_LIST, (data) => console.log(data));
-    socket.on(this.MESSAGES.REMOVE_TEAM, (data) => console.log(data));
+    socket.on(this.MESSAGES.NEW_MESSAGE, (data) => {this.newMessage(data); console.log(data);});
   }
 
   sendMessage() {
@@ -32,13 +31,6 @@ class Game extends React.Component {
       return { messages }
     });
   }
-  
-  addToRoom() {
-    const room = document.querySelector('#room').value;
-    if(room) {
-        socket.emit(this.MESSAGES.ADD_TO_ROOM, { token: localStorage.getItem('token'), room });
-    }
-  }
 
   renderMessages() {
     return (
@@ -46,41 +38,16 @@ class Game extends React.Component {
     );
   }
 
-  logout() {
-    socket.emit(this.MESSAGES.USER_LOGOUT, { token : localStorage.getItem('token') });
-    localStorage.removeItem('token');
-    this.setAuthState(false);
-  }
-
-  createRoom() {
-    socket.emit(this.MESSAGES.CREATE_TEAM, { 
-      token: localStorage.getItem('token'),
-      name: 'белая стрекоза'
-    });
-  }
-
-  deleteRoom() {
-    socket.emit(this.MESSAGES.REMOVE_TEAM, { 
-      token: localStorage.getItem('token')
-    });
-  }
-
   render() {
     return (
       <div>
         <div>
         <input id="message" placeholder="Message"/>
-        <button id="newMessage" onClick = {() => this.sendMessage()}>Послать</button>
+        <button id="newMessage" onClick = {() => this.sendMessage()}>Send</button>
         <div id="chat"> { this.renderMessages() }</div>
         </div>
-        <div>
-        <input id="room" placeholder="Room"/>
-        <button id="addToRoom" onClick = { () => this.addToRoom() }>Добавиться</button>
-        </div>
         <br/>
-        <button id="userLogout" onClick = { () => this.logout() }>Logout</button>
-        <button id="createRoom" onClick = { () => this.createRoom() }>create Room</button>
-        <button id="deleteRoom" onClick = { () => this.deleteRoom() }>delete Room</button>
+        <button id="back" onClick = { () => this.setGameState(false) }>Back</button>
       </div>
     );
   }
