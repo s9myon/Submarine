@@ -39,11 +39,11 @@ app.use(express.static(__dirname + '/public'));
 app.use('/', router);
 
 function deinitModules() {
-    db.destructor();
+	db.destructor();
 	setTimeout(() => process.exit(), 500);
 }
 
 server.listen(PORT, () => console.log(`Port is ${PORT}`));
 
-process.on('exit', deinitModules);
+//process.on('exit', deinitModules);
 process.on('SIGINT', deinitModules); // CTRL + C

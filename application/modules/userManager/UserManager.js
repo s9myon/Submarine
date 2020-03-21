@@ -54,7 +54,8 @@ class UserManager extends BaseManager {
                 }
             }
         }
-        socket.emit(this.MESSAGES.USER_LOGIN, user ? user : null);
+        let teams = this.mediator.get('getTeams');//отправить команды сразу при входе
+        socket.emit(this.MESSAGES.USER_LOGIN, { user, teams });
     }
 
     async userRegistration(data = {}, socket) {

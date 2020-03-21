@@ -10,7 +10,8 @@ const CONFIG = {
 
     // список всех триггеров в системе
     TRIGGERS: {
-        GET_USER_BY_TOKEN: 'GET_USER_BY_TOKEN'
+        GET_USER_BY_TOKEN: 'GET_USER_BY_TOKEN',
+        GET_TEAMS: 'GET_TEAMS'
     },
 
     // список всех событий в системе
