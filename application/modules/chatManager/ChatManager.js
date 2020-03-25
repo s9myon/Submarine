@@ -8,24 +8,16 @@ class ChatManager extends BaseManager {
         
         if (!this.io) return;
         this.io.on('connection', socket => {
-            socket.on(this.MESSAGES.NEW_MESSAGE, data => this.sendNewMessage(data, io, socket));
-            socket.on(this.MESSAGES.ADD_TO_ROOM, data => this.addToRoom(data));
+            socket.on(this.MESSAGES.NEW_MESSAGE, data => this.sendNewMessage(data, socket));
         });
     }
 
-    addToRoom(data) {
-        const { token, room } = data;
-        const user = this.mediator.get('getUserByToken', token);
-        this.rooms[user.id] = room;
-    }
-
-    async sendNewMessage(data = {}, io, socket) {
+    async sendNewMessage(data = {}, socket) {
         const { message } = data;
-        let user = this.mediator.get('getUserByToken', data);
-        const room = this.rooms[user.id] ? this.rooms[user.id] : 'default';
-        socket.join(room);
+        const user = this.mediator.get(this.TRIGGERS.GET_USER_BY_TOKEN, data);
+        const room = this.mediator.get(this.TRIGGERS.GET_ROOMID_BY_USERID, user.id);
         if(user) {
-            io.to(room).emit(this.MESSAGES.NEW_MESSAGE, { name: user.name, message });
+            this.io.to(room).emit(this.MESSAGES.NEW_MESSAGE, { name: user.name, message });
             //io.sockets.emit(this.MESSAGES.NEW_MESSAGE, { name: user.name, message: data.message });
         }
     }

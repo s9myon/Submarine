@@ -10,6 +10,13 @@ class DB {
         if (this.db) this.db.close();
     }
 
+    getUserByName(name) {
+        return new Promise(resolve => this.db.serialize(() => {
+            const query = "SELECT * FROM user WHERE name=?";
+            this.db.get(query, [name], (err, row) => resolve(err ? null : row));
+        }));
+    }
+
     getUserByLogin(login) {
         return new Promise(resolve => this.db.serialize(() => {
             const query = "SELECT * FROM user WHERE login=?";

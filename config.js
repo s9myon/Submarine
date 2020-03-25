@@ -10,7 +10,10 @@ const CONFIG = {
 
     // список всех триггеров в системе
     TRIGGERS: {
-        GET_USER_BY_TOKEN: 'GET_USER_BY_TOKEN'
+        GET_USER_BY_TOKEN: 'GET_USER_BY_TOKEN',
+        GET_ROOMID_BY_USERID: 'GET_ROOMID_BY_USERID',
+        GET_TEAMS: 'GET_TEAMS',
+        GET_USER_BY_ID: 'GET_USER_BY_ID'
     },
 
     // список всех событий в системе
@@ -25,7 +28,6 @@ const CONFIG = {
         USER_LOGOUT: 'USER_LOGOUT',
         // about chat
         NEW_MESSAGE: 'NEW_MESSAGE', // новое сообщение в чат
-        ADD_TO_ROOM: 'ADD_TO_ROOM',
         // about team
         TEAM_LIST: 'TEAM_LIST', // список комнат
         CREATE_TEAM: 'CREATE_TEAM',

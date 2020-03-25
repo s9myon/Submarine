@@ -1,5 +1,6 @@
 const md5 = require('md5');
 const BaseManager = require('../BaseManager');
+const User = require('./User');
 
 class UserManager extends BaseManager {
     constructor(options) {
@@ -15,13 +16,23 @@ class UserManager extends BaseManager {
         });
 
         // настроить триггеры
-        this.mediator.set('getUserByToken', data => this.getUserByToken(data));
+        this.mediator.set(this.TRIGGERS.GET_USER_BY_TOKEN, data => this.getUserByToken(data));
+        this.mediator.set(this.TRIGGERS.GET_USER_BY_ID, id => this.getUserById(id));
     }
 
     getUserByToken(data = {}) {
         if (data.token) {
-            for (let user in this.users) {
-                if (this.users[user].token === data.token) return this.users[user];
+            for (let id in this.users) {
+                if (this.users[id].token === data.token) return this.users[id];
+            }
+        }
+        return null;
+    }
+
+    getUserById(id){
+        if (id) {
+            for (let key in this.users) {
+                if (this.users[key].id === id) return this.users[key];
             }
         }
         return null;
@@ -50,11 +61,12 @@ class UserManager extends BaseManager {
                     await this.db.setToken(token, login);
                     user.token = token;
                     user.socketId = socket.id;
-                    this.users[user.id] = user;
+                    this.users[user.id] = new User(user);
                 }
             }
         }
-        socket.emit(this.MESSAGES.USER_LOGIN, user ? user : null);
+        let teams = this.mediator.get(this.TRIGGERS.GET_TEAMS);//отправить команды сразу при входе
+        socket.emit(this.MESSAGES.USER_LOGIN, { user, teams });
     }
 
     async userRegistration(data = {}, socket) {
