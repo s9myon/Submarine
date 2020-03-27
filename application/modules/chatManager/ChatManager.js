@@ -2,15 +2,32 @@ const BaseManager = require('../BaseManager');
 
 class ChatManager extends BaseManager {
     constructor(options) {
-        super(options);
-
-        this.rooms = {};// комнаты { id: room }
-        
+        super(options);        
         if (!this.io) return;
         this.io.on('connection', socket => {
             socket.on(this.MESSAGES.NEW_MESSAGE, data => this.sendNewMessage(data, socket));
         });
+        // настроить события
+        this.mediator.subscribe(this.EVENTS.DISCONNECT, data => this.disconnect(data));
     }
+
+    /*        */
+    /* EVENTS */
+    /*        */
+
+    disconnect(data) {
+        let user = this.mediator.get(this.TRIGGERS.GET_USER_BY_TOKEN, data);
+        if(user) {
+            let roomId = this.mediator.get(this.TRIGGERS.GET_ROOMID_BY_USERID, user.id);
+            if(roomId) {
+                this.io.to(roomId).emit(this.MESSAGES.NEW_MESSAGE, { message: 'Пользователь ' + user.name + ' покинул вас.' });
+            }
+        }
+    }
+
+    /*       */
+    /* LOGIC */
+    /*       */
 
     async sendNewMessage(data = {}, socket) {
         const { message } = data;
