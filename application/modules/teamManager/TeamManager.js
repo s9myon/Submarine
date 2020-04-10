@@ -20,10 +20,12 @@ class TeamManager extends BaseManager {
             socket.on(this.MESSAGES.TEAM_LIST, () => this.teams);
         });
         // настроить триггеры
+        this.mediator.set(this.TRIGGERS.REMOVE_TEAM, (data, socket) => this.removeTeam(data, socket));
+        this.mediator.set(this.TRIGGERS.GET_TEAM, (id) => this.getTeam(id));
         this.mediator.set(this.TRIGGERS.GET_TEAMS, () => this.getTeams());
         this.mediator.set(this.TRIGGERS.GET_ROOMID_BY_USERID, (data) => this.getRoomIdByUserId(data));
         // настроить события
-        this.mediator.subscribe(this.EVENTS.DISCONNECT, data => this.disconnect(data));
+        this.mediator.subscribe(this.EVENTS.LOGOUT, data => this.disconnect(data));
     }
 
     /*        */
@@ -42,7 +44,7 @@ class TeamManager extends BaseManager {
             }
             let teamId = '';
             for(let key in this.teams) {
-                if(this.teams[key].players.find(player => user.id == player.id)){
+                if(this.teams[key].players.find(player => user.id === player.id)){
                     teamId = key;
                 }
             }
@@ -63,7 +65,7 @@ class TeamManager extends BaseManager {
     getRoomIdByUserId(id) {
         let team = null;
         for(let teamId in this.teams) {
-            if(this.teams[teamId].players.find(player => id == player.id)){
+            if(this.teams[teamId].players.find(player => id === player.id)){
                 team = teamId;
             }
         }

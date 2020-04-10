@@ -8,7 +8,7 @@ class ChatManager extends BaseManager {
             socket.on(this.MESSAGES.NEW_MESSAGE, data => this.sendNewMessage(data, socket));
         });
         // настроить события
-        this.mediator.subscribe(this.EVENTS.DISCONNECT, data => this.disconnect(data));
+        this.mediator.subscribe(this.EVENTS.LOGOUT, data => this.disconnect(data));
     }
 
     /*        */

@@ -12,13 +12,15 @@ const CONFIG = {
     TRIGGERS: {
         GET_USER_BY_TOKEN: 'GET_USER_BY_TOKEN',
         GET_ROOMID_BY_USERID: 'GET_ROOMID_BY_USERID',
+        GET_TEAM: 'GET_TEAM',
         GET_TEAMS: 'GET_TEAMS',
-        GET_USER_BY_ID: 'GET_USER_BY_ID'
+        GET_USER_BY_ID: 'GET_USER_BY_ID',
+        REMOVE_TEAM: 'REMOVE_TEAM'
     },
 
     // список всех событий в системе
     EVENTS: {
-        DISCONNECT: 'DISCONNECT'
+        LOGOUT: 'LOGOUT'
     },
 
     // список всех сокетных сообщений в системе
@@ -37,6 +39,8 @@ const CONFIG = {
         LEAVE_TEAM: 'LEAVE_TEAM',
         KICK_FROM_TEAM: 'KICK_FROM_TEAM', // выкинуть из команды
         // about game
+        START_GAME: 'START_GAME',
+        END_GAME: 'END_GAME'
     }
 };
 
