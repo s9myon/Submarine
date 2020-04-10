@@ -20,7 +20,7 @@ const CONFIG = {
 
     // список всех событий в системе
     EVENTS: {
-        DISCONNECT: 'DISCONNECT'
+        LOGOUT: 'LOGOUT'
     },
 
     // список всех сокетных сообщений в системе

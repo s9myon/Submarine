@@ -19,7 +19,7 @@ class UserManager extends BaseManager {
         this.mediator.set(this.TRIGGERS.GET_USER_BY_TOKEN, data => this.getUserByToken(data));
         this.mediator.set(this.TRIGGERS.GET_USER_BY_ID, id => this.getUserById(id));
         // настроить события
-        this.mediator.subscribe(this.EVENTS.DISCONNECT, async data => await this.disconnect(data));
+        this.mediator.subscribe(this.EVENTS.LOGOUT, async data => await this.disconnect(data));
     }
 
     /*        */
@@ -61,7 +61,7 @@ class UserManager extends BaseManager {
     /*       */
 
     async userLogout(data = {}, socket) {
-        this.mediator.call(this.EVENTS.DISCONNECT, data);// вызвать все подписанные события
+        this.mediator.call(this.EVENTS.LOGOUT, data);// вызвать все подписанные события
         return socket.emit(this.MESSAGES.USER_LOGOUT, true);
     }
 

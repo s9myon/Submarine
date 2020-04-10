@@ -25,7 +25,7 @@ class TeamManager extends BaseManager {
         this.mediator.set(this.TRIGGERS.GET_TEAMS, () => this.getTeams());
         this.mediator.set(this.TRIGGERS.GET_ROOMID_BY_USERID, (data) => this.getRoomIdByUserId(data));
         // настроить события
-        this.mediator.subscribe(this.EVENTS.DISCONNECT, data => this.disconnect(data));
+        this.mediator.subscribe(this.EVENTS.LOGOUT, data => this.disconnect(data));
     }
 
     /*        */
