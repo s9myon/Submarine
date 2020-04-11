@@ -18,7 +18,25 @@ class UserManager extends BaseManager {
         // настроить триггеры
         this.mediator.set(this.TRIGGERS.GET_USER_BY_TOKEN, data => this.getUserByToken(data));
         this.mediator.set(this.TRIGGERS.GET_USER_BY_ID, id => this.getUserById(id));
+        // настроить события
+        this.mediator.subscribe(this.EVENTS.LOGOUT, async data => await this.disconnect(data));
     }
+
+    /*        */
+    /* EVENTS */
+    /*        */
+
+    async disconnect(data) {
+        let user = this.getUserByToken(data);
+        if (user) {
+            await this.db.setToken(null, user.login); // занулить токен
+            delete this.users[user.id]; // удалить пользователя из списка
+        }
+    }
+
+    /*          */
+    /* TRIGGERS */
+    /*          */
 
     getUserByToken(data = {}) {
         if (data.token) {
@@ -38,14 +56,13 @@ class UserManager extends BaseManager {
         return null;
     }
 
+    /*       */
+    /* LOGIC */
+    /*       */
+
     async userLogout(data = {}, socket) {
-        let user = this.getUserByToken(data);
-        if (user) {
-            await this.db.setToken(null, user.login);
-            delete this.users[user.id];
-            return socket.emit(this.MESSAGES.USER_LOGOUT, true);
-        }
-        socket.emit(this.MESSAGES.USER_LOGOUT, false);
+        this.mediator.call(this.EVENTS.LOGOUT, data);// вызвать все подписанные события
+        return socket.emit(this.MESSAGES.USER_LOGOUT, true);
     }
 
     async userLogin(data = {}, socket) {

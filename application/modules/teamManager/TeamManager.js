@@ -10,9 +10,6 @@ class TeamManager extends BaseManager {
             SAILOR: 'sailor' // морячок
         };
         this.teams = {};
-        this.mediator.set(this.TRIGGERS.GET_TEAMS, () => this.getTeams());
-        this.mediator.set(this.TRIGGERS.GET_ROOMID_BY_USERID, (data) => this.getRoomIdByUserId(data));
-        
         if (!this.io) return;
         this.io.on('connection', socket => {
             socket.on(this.MESSAGES.CREATE_TEAM, data => this.createTeam(data, socket));
@@ -22,21 +19,70 @@ class TeamManager extends BaseManager {
             socket.on(this.MESSAGES.KICK_FROM_TEAM, data => this.kickFromTeam(data));
             socket.on(this.MESSAGES.TEAM_LIST, () => this.teams);
         });
+        // настроить триггеры
+        this.mediator.set(this.TRIGGERS.REMOVE_TEAM, (data, socket) => this.removeTeam(data, socket));
+        this.mediator.set(this.TRIGGERS.GET_TEAM, (id) => this.getTeam(id));
+        this.mediator.set(this.TRIGGERS.GET_TEAMS, () => this.getTeams());
+        this.mediator.set(this.TRIGGERS.GET_ROOMID_BY_USERID, (data) => this.getRoomIdByUserId(data));
+        // настроить события
+        this.mediator.subscribe(this.EVENTS.LOGOUT, data => this.disconnect(data));
     }
 
+    /*        */
+    /* EVENTS */
+    /*        */
 
-    getTeam(id) {
-        for (let key in this.teams) {
-            const team = this.teams[key];
-            if (team.players.find(player => player.id === id)) {
-                return team;
+    disconnect(data) {
+        let user = this.mediator.get(this.TRIGGERS.GET_USER_BY_TOKEN, data);
+        if(user) {
+            let team = this.getTeam(user.id);
+            if(team && this.isCaptain(team, user.id)) { // если капитан команды
+                delete this.teams[user.id];
+                this.io.emit(this.MESSAGES.LEAVE_TEAM, true);
+                this.io.emit(this.MESSAGES.TEAM_LIST, this.teams);
+                return;
+            }
+            let teamId = '';
+            for(let key in this.teams) {
+                if(this.teams[key].players.find(player => user.id === player.id)){
+                    teamId = key;
+                }
+            }
+            if(teamId) {
+                this.deleteFromTeam(user.id, teamId);
             }
         }
-        return null;
     }
+
+    /*          */
+    /* TRIGGERS */
+    /*          */
 
     getTeams() {
         return this.teams;
+    }
+
+    getRoomIdByUserId(id) {
+        let team = null;
+        for(let teamId in this.teams) {
+            if(this.teams[teamId].players.find(player => id === player.id)){
+                team = teamId;
+            }
+        }
+        return team ? this.teams[team].roomId : null;
+    }
+
+    /*       */
+    /* LOGIC */
+    /*       */
+
+    getTeam(id) {
+        for (let key in this.teams) {
+            if (this.teams[key].players.find(player => player.id === id)) {
+                return this.teams[key];
+            }
+        }
+        return null;
     }
 
     isCaptain(team, captainId) {
@@ -51,16 +97,6 @@ class TeamManager extends BaseManager {
                 delete this.teams[teamId];
             }
         }
-    }
-
-    getRoomIdByUserId(id) {
-        let team = null;
-        for(let teamId in this.teams) {
-            if(this.teams[teamId].players.find(player => id == player.id)){
-                team = teamId;
-            }
-        }
-        return team ? this.teams[team].roomId : null;
     }
 
     getTeamIdByName(name) {
@@ -90,7 +126,7 @@ class TeamManager extends BaseManager {
                 socket.leave(this.teams[teamId].roomId);
                 if(player.role === this.ROLE.CAPTAIN){
                     delete this.teams[teamId];
-                    return;
+                    continue;
                 }
                 this.deleteFromTeam(player.id, teamId);
             }
@@ -117,11 +153,11 @@ class TeamManager extends BaseManager {
         const user = this.mediator.get(this.TRIGGERS.GET_USER_BY_TOKEN, data);
         if(user) {
             this.deleteUserFromAllTeams(user, socket);
-            this.io.emit(this.MESSAGES.LEAVE_TEAM, true);
+            socket.emit(this.MESSAGES.LEAVE_TEAM, true);
             this.io.emit(this.MESSAGES.TEAM_LIST, this.teams);
             return;
         }
-        this.io.emit(this.MESSAGES.LEAVE_TEAM, false);
+        socket.emit(this.MESSAGES.LEAVE_TEAM, false);
     }
 
     removeTeam(data, socket) {
