@@ -10,16 +10,10 @@ class Container extends React.Component {
     constructor() {
         super();
         this.state = {
-            auth: true,
-            registr: false,
-            game: false,
-            isJoined: false, // если присоединился к команде
-            teams: {}
+            auth: true, // если проходишь авторизацию
+            registr: false, // если проходишь регистрацию
+            game: false // если перешел в лобби
         };
-    }
-
-    setTeams(data) {
-        this.setState({ teams: data });
     }
 
     setAuthState(val) {
@@ -29,20 +23,14 @@ class Container extends React.Component {
     }
     
     setRegistrState(val) {
-      this.setState({
-        registr: val
-      });
-    }
-
-    setIsJoinedState(val) {
         this.setState({
-            isJoined: val
+          registr: val
         });
     }
     
     setGameState(val) {
-        this.setState(state => {
-            return { game: val && state.isJoined };
+        this.setState({ 
+            game: val 
         });
     }
 
@@ -57,21 +45,16 @@ class Container extends React.Component {
                         <Auth 
                             MESSAGES = { CONFIG.MESSAGES } 
                             setRegistrState = {(val) => this.setRegistrState(val)}
-                            setAuthState = {(val) => this.setAuthState(val)}
-                            setIsJoinedState = { val => this.setIsJoinedState(val) }
-                            setTeams = { (data) => this.setTeams(data)}/> :
+                            setAuthState = {(val) => this.setAuthState(val)}/> :
                         this.state.game ? 
                             <Game
-                                setGameState = { (val) => this.setGameState(val) }
-                                setIsJoinedState = { val => this.setIsJoinedState(val) }
-                                MESSAGES = { CONFIG.MESSAGES }/> :
+                                MESSAGES = { CONFIG.MESSAGES }
+                                setGameState = { (val) => this.setGameState(val) }/> :
                             <Team
                                 MESSAGES = { CONFIG.MESSAGES }
-                                setTeams = { (teams) => this.setTeams(teams) }
                                 setUpdate = { (val) => this.setUpdate(val) }
                                 setIsJoinedState = { val => this.setIsJoinedState(val) }
-                                setGameState = { (val) => this.setGameState(val) }
-                                teams = { this.state.teams }/>
+                                setGameState = { (val) => this.setGameState(val) }/>
                 } 
             </div>
         );
