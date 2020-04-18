@@ -79,11 +79,13 @@ class UserManager extends BaseManager {
                     user.token = token;
                     user.socketId = socket.id;
                     this.users[user.id] = new User(user);
+                    socket.emit(this.MESSAGES.USER_LOGIN, this.users[user.id].get());
+                    socket.emit(this.MESSAGES.TEAM_LIST, this.mediator.get(this.TRIGGERS.GET_TEAMS)); //отправить команды сразу при входе
+                    return;
                 }
             }
         }
-        let teams = this.mediator.get(this.TRIGGERS.GET_TEAMS);//отправить команды сразу при входе
-        socket.emit(this.MESSAGES.USER_LOGIN, { user, teams });
+        socket.emit(this.MESSAGES.USER_LOGIN, false);
     }
 
     async userRegistration(data = {}, socket) {

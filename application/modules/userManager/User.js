@@ -11,6 +11,7 @@ class User {
     get() {
         return {
             id: this.id,
+            token: this.token,
             name: this.name
         };
     }

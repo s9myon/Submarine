@@ -3,7 +3,7 @@ class Torpedo extends Equipment {
         options.type = 'Torpedo';
         super(options);
         const { count } = options;
-        options.params = { 
+        this.params = { 
             count, // количество торпед
             loaded: false, // заряжена торпеда или нет
             speed: 0, // скорость торпеды

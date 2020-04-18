@@ -18,9 +18,9 @@ class ChatManager extends BaseManager {
     disconnect(data) {
         let user = this.mediator.get(this.TRIGGERS.GET_USER_BY_TOKEN, data);
         if(user) {
-            let roomId = this.mediator.get(this.TRIGGERS.GET_ROOMID_BY_USERID, user.id);
-            if(roomId) {
-                this.io.to(roomId).emit(this.MESSAGES.NEW_MESSAGE, { message: 'Пользователь ' + user.name + ' покинул вас.' });
+            let team = this.mediator.get(this.TRIGGERS.GET_TEAM, user.id);
+            if(team) {
+                this.io.to(team.roomId).emit(this.MESSAGES.NEW_MESSAGE, { message: 'Пользователь ' + user.name + ' покинул вас.' });
             }
         }
     }
@@ -32,10 +32,9 @@ class ChatManager extends BaseManager {
     async sendNewMessage(data = {}, socket) {
         const { message } = data;
         const user = this.mediator.get(this.TRIGGERS.GET_USER_BY_TOKEN, data);
-        const room = this.mediator.get(this.TRIGGERS.GET_ROOMID_BY_USERID, user.id);
+        const team = this.mediator.get(this.TRIGGERS.GET_TEAM, user.id);
         if(user) {
-            this.io.to(room).emit(this.MESSAGES.NEW_MESSAGE, { name: user.name, message });
-            //io.sockets.emit(this.MESSAGES.NEW_MESSAGE, { name: user.name, message: data.message });
+            this.io.to(team.roomId).emit(this.MESSAGES.NEW_MESSAGE, { name: user.name, message });
         }
     }
 }
