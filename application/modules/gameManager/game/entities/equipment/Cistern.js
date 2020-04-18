@@ -3,7 +3,7 @@ class Cistern extends Equipment {
         options.type = 'Cistern';
         super(options);
         const { volume, currentVolume } = options;
-        options.params = { 
+        this.params = { 
             volume, // общий объем цистерны
             currentVolume // заполненность цистерны (в процентах)
         };

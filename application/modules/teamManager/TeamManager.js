@@ -1,5 +1,5 @@
 const BaseManager = require('../BaseManager');
-const Player = require('./Player');
+const Gamer = require('./Gamer');
 
 class TeamManager extends BaseManager {
     constructor(options) {
@@ -23,7 +23,6 @@ class TeamManager extends BaseManager {
         this.mediator.set(this.TRIGGERS.REMOVE_TEAM, (data, socket) => this.removeTeam(data, socket));
         this.mediator.set(this.TRIGGERS.GET_TEAM, (id) => this.getTeam(id));
         this.mediator.set(this.TRIGGERS.GET_TEAMS, () => this.getTeams());
-        this.mediator.set(this.TRIGGERS.GET_ROOMID_BY_USERID, (data) => this.getRoomIdByUserId(data));
         // настроить события
         this.mediator.subscribe(this.EVENTS.LOGOUT, data => this.disconnect(data));
     }
@@ -141,7 +140,7 @@ class TeamManager extends BaseManager {
             this.deleteUserFromAllTeams(user, socket);
             const teamId = this.getTeamIdByRoomId(roomId);
             socket.join(roomId);
-            this.teams[teamId].players.push(new Player(user.id, user.name, this.ROLE.SAILOR));
+            this.teams[teamId].players.push(new Gamer(user.id, user.name, this.ROLE.SAILOR));
             socket.emit(this.MESSAGES.JOIN_TO_TEAM, true);
             this.io.emit(this.MESSAGES.TEAM_LIST, this.teams);
             return;
@@ -198,7 +197,7 @@ class TeamManager extends BaseManager {
             const roomId = this.common.getRoomId();
             this.teams[user.id] = { 
                 name,
-                players: [new Player(user.id, user.name, this.ROLE.CAPTAIN)],
+                players: [new Gamer(user.id, user.name, this.ROLE.CAPTAIN)],
                 roomId
             };
             socket.join(roomId);
