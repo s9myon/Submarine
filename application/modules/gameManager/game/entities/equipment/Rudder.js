@@ -1,11 +1,11 @@
-class Helm extends Equipment {
+class Rudder extends Equipment {
     constructor(options = {}) {
-        options.type = 'Helm';
+        options.type = 'Rudder';
         super(options);
-        options.params = { 
+        this.params = { 
             rudder: 0, // положение руля
             aileron: 0, // положение рулей высоты
         };
     }
 }
-module.exports = Helm;
+module.exports = Rudder;

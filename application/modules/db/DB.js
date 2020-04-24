@@ -1,9 +1,16 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const sqlite = require('sqlite');
+const ORM = require('./ORM');
 
 class DB {
     constructor({ NAME }) {
-        this.db = new sqlite3.Database(path.join(__dirname, NAME));
+        this.db;
+        this.orm;
+        sqlite.open(path.join(__dirname, NAME), sqlite3.Database).then(async db => {
+            this.db = db;
+            this.orm = new ORM(db);
+        });
     }
 
     destructor() {
@@ -11,34 +18,23 @@ class DB {
     }
 
     getUserByName(name) {
-        return new Promise(resolve => this.db.serialize(() => {
-            const query = "SELECT * FROM user WHERE name=?";
-            this.db.get(query, [name], (err, row) => resolve(err ? null : row));
-        }));
+        return this.orm.detail('user', { name });
     }
 
     getUserByLogin(login) {
-        return new Promise(resolve => this.db.serialize(() => {
-            const query = "SELECT * FROM user WHERE login=?";
-            this.db.get(query, [login], (err, row) => resolve(err ? null : row));
-        }));
+        return this.orm.detail('user', { login });
     }
 
     getUserByToken(token) {
-        return new Promise(resolve => this.db.serialize(() => {
-            const query = "SELECT * FROM user WHERE token=?";
-            this.db.get(query, [token], (err, row) => resolve(err ? null : row));
-        }));
+        return this.orm.detail('user', { token });
     }
 
     addUser(login, password, name) {
-        const query = "INSERT INTO user (login, password, name) VALUES (?, ?, ?)";
-        this.db.run(query, [login, password, name]);
+        return this.orm.add('user', 'login, password, name', [login, password, name]);
     }
 
     setToken(token, login) {
-        const query = "UPDATE user SET token=? WHERE login=?";
-        this.db.run(query, [token, login]);
+        return this.orm.update('user', { token }, { login });
     }
 }
 

@@ -3,7 +3,7 @@ class Engine extends Equipment {
         options.type = 'Engine';
         super(options);
         const { power, direction } = options;
-        options.params = { 
+        this.params = { 
             power, // общая мощность двигателя
             currentPower: 0, // текущая мощность двигателя
             direction // направление работы двигателя (вперед/назад/стоит)
